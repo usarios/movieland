@@ -1,0 +1,3 @@
+delete from  movie;
+INSERT INTO MOVIE(id,name_rus, name_native, year, rating, price,poster_url) VALUES(1,'Укрощение строптивого','Il bisbetico domato',1980,'7.7','120.00','https://images-na.ssl-images-amazon.com/images/M/MV5BMTc5NTM5OTY0Nl5BMl5BanBnXkFtZTcwNjg1MjcyMQ@@._V1._SY209_CR3,0,140,209_.jpg');
+INSERT INTO MOVIE(id,name_rus, name_native, year, rating, price,poster_url) VALUES(2,'Блеф','Bluff storia di truffe e di imbroglioni',1976,'7.6','100.00','https://images-na.ssl-images-amazon.com/images/M/MV5BMjk5YmMxMjMtMTlkNi00YTI5LThhYTMtOTk2NmNiNzQwMzI0XkEyXkFqcGdeQXVyMTQ3Njg3MQ@@._V1._SX140_CR0,0,140,209_.jpg');
