@@ -20,9 +20,15 @@ public class MovieController {
     }
 
     @GetMapping(path = "/movie", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-
     public List<Movie> getAllMovies() {
 
         return movieService.getAll();
     }
+
+    @GetMapping(path = "/movie/random", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Movie> getRandomMovies() {
+
+        return movieService.getRandom();
+    }
+
 }

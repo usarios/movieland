@@ -17,13 +17,22 @@ public class DefaultMovieDao implements MovieDao {
 
     static private final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
 
-    private static final String SQL_GET_ALL_MOVIES = "select id, name_rus, name_native, year, rating, price, " +
+    private final String SQL_GET_ALL_MOVIES = "select id, name_rus, name_native, year, rating, price, " +
             "poster_url from movie order by id";
+
+    private String SQL_GET_N_RANDOM_MOVIES = "select id, name_rus, name_native, year, rating, price, " +
+            "poster_url from movie order by random() limit 3";
 
     @Override
     public List<Movie> getAll() {
 
         return jdbcTemplate.query(SQL_GET_ALL_MOVIES, MOVIE_ROW_MAPPER);
+    }
+
+    @Override
+    public List<Movie> getRandom() {
+
+        return jdbcTemplate.query(SQL_GET_N_RANDOM_MOVIES, MOVIE_ROW_MAPPER);
     }
 
 }
