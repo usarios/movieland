@@ -55,7 +55,6 @@ public class DefaultMovieDaoTest {
 
         assertEquals(25, actualMovieList.size());
         assertThat(actualMovieList, hasItems(movie1, movie2));
-
     }
 
     @Test

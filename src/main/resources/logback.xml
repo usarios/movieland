@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="FILE-APPENDER"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/movieland.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{100} - %msg%n
+            </Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/movieland-%d{yyyy-MM-dd}.log.%i
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>5MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="CONSOLE-APPENDER" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.dmuzychuk.movieland" level="DEBUG"
+            additivity="false">
+        <appender-ref ref="FILE-APPENDER" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE-APPENDER" />
+    </root>
+
+</configuration>

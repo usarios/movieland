@@ -89,7 +89,7 @@ public class DefaultMovieServiceTest {
         List<Movie> actualMovieList = movieService.getRandom();
 
         assertEquals(2, actualMovieList.size());
-        assertThat(actualMovieList, hasItems(movie1));
+        assertThat(actualMovieList, hasItems(movie1,movie2));
 
     }
 }
