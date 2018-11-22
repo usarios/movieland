@@ -11,12 +11,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/resources/root-context.xml", "file:src/main/webapp/WEB-INF/movieland-servlet.xml", "classpath:/spring/test-context.xml"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class DefaultMovieDaoTest {
 
     private MovieDao movieDao;
@@ -27,12 +28,11 @@ public class DefaultMovieDaoTest {
     }
 
     @Test
-    @DirtiesContext
     public void testGetAll() {
 
         List<Movie> expectedMovieList = new ArrayList<>();
         Movie movie1 = new Movie();
-        movie1.setId(1);
+        movie1.setId(12);
         movie1.setNameRussian("Укрощение строптивого");
         movie1.setNameNative("Il bisbetico domato");
         movie1.setYearOfRelease(1980);
@@ -42,7 +42,7 @@ public class DefaultMovieDaoTest {
         expectedMovieList.add(movie1);
 
         Movie movie2 = new Movie();
-        movie2.setId(2);
+        movie2.setId(7);
         movie2.setNameRussian("Блеф");
         movie2.setNameNative("Bluff storia di truffe e di imbroglioni");
         movie2.setYearOfRelease(1976);
@@ -53,10 +53,15 @@ public class DefaultMovieDaoTest {
 
         List<Movie> actualMovieList = movieDao.getAll();
 
-        assertEquals(2, actualMovieList.size());
+        assertEquals(25, actualMovieList.size());
+        assertThat(actualMovieList, hasItems(movie1, movie2));
 
-        assertThat(actualMovieList, containsInAnyOrder(movie1, movie2));
+    }
 
+    @Test
+    public void testGetRandom() {
+        List<Movie> actualMovieList = movieDao.getRandom();
+        assertEquals(3, actualMovieList.size());
     }
 }
 

@@ -59,7 +59,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     public void testGetAll() throws Exception {
 
         Movie movie = new Movie();
-        movie.setId(1);
+        movie.setId(12);
         movie.setNameRussian("Укрощение строптивого");
         movie.setNameNative("Il bisbetico domato");
         movie.setYearOfRelease(1980);
@@ -73,12 +73,41 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", equalTo(1)))
+                .andExpect(jsonPath("$[0].id", equalTo(12)))
                 .andExpect(jsonPath("$[0].nameRussian", equalTo("Укрощение строптивого")))
                 .andExpect(jsonPath("$[0].nameNative", equalTo("Il bisbetico domato")))
                 .andExpect(jsonPath("$[0].yearOfRelease", equalTo(1980)))
                 .andExpect(jsonPath("$[0].rating", equalTo(7.7)))
                 .andExpect(jsonPath("$[0].price", equalTo(120.00)))
                 .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BMTc5NTM5OTY0Nl5BMl5BanBnXkFtZTcwNjg1MjcyMQ@@._V1._SY209_CR3,0,140,209_.jpg")));
+    }
+
+    @Test
+    @DirtiesContext
+    public void testGetRandomMovies() throws Exception {
+
+        Movie movie = new Movie();
+
+        movie.setId(13);
+        movie.setNameRussian("Ходячий замок");
+        movie.setNameNative("Hauru no ugoku shiro");
+        movie.setYearOfRelease(2004);
+        movie.setRating(8.2);
+        movie.setPrice(130.5);
+        movie.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BZTRhY2QwM2UtNWRlNy00ZWQwLTg3MjktZThmNjQ3NTdjN2IxXkEyXkFqcGdeQXVyMzg2MzE2OTE@._V1._SY209_CR5,0,140,209_.jpg");
+
+        when(movieService.getRandom()).thenReturn(Collections.singletonList(movie));
+
+        mockMvc.perform(get("/movie/random"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", equalTo(13)))
+                .andExpect(jsonPath("$[0].nameRussian", equalTo("Ходячий замок")))
+                .andExpect(jsonPath("$[0].nameNative", equalTo("Hauru no ugoku shiro")))
+                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(2004)))
+                .andExpect(jsonPath("$[0].rating", equalTo(8.2)))
+                .andExpect(jsonPath("$[0].price", equalTo(130.5)))
+                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BZTRhY2QwM2UtNWRlNy00ZWQwLTg3MjktZThmNjQ3NTdjN2IxXkEyXkFqcGdeQXVyMzg2MzE2OTE@._V1._SY209_CR5,0,140,209_.jpg")));
     }
 }

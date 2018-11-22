@@ -22,4 +22,9 @@ public class DefaultMovieService implements MovieService {
         return movieDao.getAll();
     }
 
+    @Override
+    public List<Movie> getRandom() {
+        return movieDao.getRandom();
+    }
+
 }
