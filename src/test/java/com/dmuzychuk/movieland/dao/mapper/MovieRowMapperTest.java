@@ -28,7 +28,7 @@ public class MovieRowMapperTest {
         when(resultSet.getDouble("price")).thenReturn(120.00);
         when(resultSet.getString("poster_url")).thenReturn("https://images-na.ssl-images-amazon.com/images/M/MV5BMTc5NTM5OTY0Nl5BMl5BanBnXkFtZTcwNjg1MjcyMQ@@._V1._SY209_CR3,0,140,209_.jpg");
 
-        Movie actualMovie = movieRowMapper.mapRow(resultSet, 0);
+        Movie actualMovie = movieRowMapper.mapRow(resultSet,0);
 
         assertEquals(1, actualMovie.getId());
         assertEquals("Укрощение строптивого", actualMovie.getNameRussian());
