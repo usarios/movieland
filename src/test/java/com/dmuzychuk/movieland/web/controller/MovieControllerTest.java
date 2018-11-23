@@ -57,7 +57,6 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     @Test
     @DirtiesContext
     public void testGetAll() throws Exception {
-
         Movie movie = new Movie();
         movie.setId(12);
         movie.setNameRussian("Укрощение строптивого");
@@ -85,7 +84,6 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     @Test
     @DirtiesContext
     public void testGetRandomMovies() throws Exception {
-
         Movie movie = new Movie();
 
         movie.setId(13);
@@ -109,5 +107,32 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[0].rating", equalTo(8.2)))
                 .andExpect(jsonPath("$[0].price", equalTo(130.5)))
                 .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BZTRhY2QwM2UtNWRlNy00ZWQwLTg3MjktZThmNjQ3NTdjN2IxXkEyXkFqcGdeQXVyMzg2MzE2OTE@._V1._SY209_CR5,0,140,209_.jpg")));
+    }
+
+    @Test
+    @DirtiesContext
+    public void testGetMoviesByGenreId() throws Exception {
+        Movie movie = new Movie();
+        movie.setId(12);
+        movie.setNameRussian("Блеф");
+        movie.setNameNative("Bluff storia di truffe e di imbroglioni");
+        movie.setYearOfRelease(1976);
+        movie.setRating(7.6);
+        movie.setPrice(100.00);
+        movie.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BMjk5YmMxMjMtMTlkNi00YTI5LThhYTMtOTk2NmNiNzQwMzI0XkEyXkFqcGdeQXVyMTQ3Njg3MQ@@._V1._SX140_CR0,0,140,209_.jpg");
+
+        when(movieService.getByGenreId(7)).thenReturn(Collections.singletonList(movie));
+
+        mockMvc.perform(get("/movie/genre/7"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", equalTo(12)))
+                .andExpect(jsonPath("$[0].nameRussian", equalTo("Блеф")))
+                .andExpect(jsonPath("$[0].nameNative", equalTo("Bluff storia di truffe e di imbroglioni")))
+                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(1976)))
+                .andExpect(jsonPath("$[0].rating", equalTo(7.6)))
+                .andExpect(jsonPath("$[0].price", equalTo(100.00)))
+                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BMjk5YmMxMjMtMTlkNi00YTI5LThhYTMtOTk2NmNiNzQwMzI0XkEyXkFqcGdeQXVyMTQ3Njg3MQ@@._V1._SX140_CR0,0,140,209_.jpg")));
     }
 }

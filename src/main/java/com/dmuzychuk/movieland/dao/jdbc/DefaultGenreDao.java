@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -34,7 +33,7 @@ public class DefaultGenreDao implements GenreDao {
         List<Genre> genres = new ArrayList<>(jdbcTemplate.query(SQL_GET_ALL_GENRES, GENRE_ROW_MAPPER));
 
         logger.info("getAll method returned: {} rows", genres.size());
-        logger.debug("getAll method returned such genres: {}", Arrays.asList(genres));
+        logger.debug("getAll method returned such genres: {}", genres);
 
         return genres;
     }

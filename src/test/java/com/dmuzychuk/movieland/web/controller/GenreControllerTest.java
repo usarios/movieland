@@ -56,7 +56,6 @@ public class GenreControllerTest {
     @Test
     @DirtiesContext
     public void testGetAll() throws Exception {
-
         Genre genre = new Genre();
         genre.setId(7);
         genre.setName("комедия");

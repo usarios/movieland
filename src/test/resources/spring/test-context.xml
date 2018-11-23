@@ -13,6 +13,8 @@
         <jdbc:script location="classpath:db/dml_movie.sql" />
         <jdbc:script location="classpath:db/ddl_genre.sql" />
         <jdbc:script location="classpath:db/dml_genre.sql" />
+        <jdbc:script location="classpath:db/ddl_movie_genre.sql"/>
+        <jdbc:script location="classpath:db/dml_movie_genre.sql"/>
     </jdbc:embedded-database>
 
 </beans>

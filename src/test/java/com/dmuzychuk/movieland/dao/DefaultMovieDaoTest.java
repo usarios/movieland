@@ -29,7 +29,6 @@ public class DefaultMovieDaoTest {
 
     @Test
     public void testGetAll() {
-
         List<Movie> expectedMovieList = new ArrayList<>();
         Movie movie1 = new Movie();
         movie1.setId(12);
@@ -61,6 +60,12 @@ public class DefaultMovieDaoTest {
     public void testGetRandom() {
         List<Movie> actualMovieList = movieDao.getRandom();
         assertEquals(3, actualMovieList.size());
+    }
+
+    @Test
+    public void testGetByGenre() {
+        List<Movie> actualMovieList = movieDao.getByGenreId(7);
+        assertEquals(7, actualMovieList.size());
     }
 }
 
