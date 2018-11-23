@@ -1,0 +1,16 @@
+delete from genre;
+INSERT INTO genre (id, name_rus) VALUES (1, 'драма');
+INSERT INTO genre (id, name_rus) VALUES (2, 'криминал');
+INSERT INTO genre (id, name_rus) VALUES (3, 'фэнтези');
+INSERT INTO genre (id, name_rus) VALUES (4, 'детектив');
+INSERT INTO genre (id, name_rus) VALUES (5, 'мелодрама');
+INSERT INTO genre (id, name_rus) VALUES (6, 'биография');
+INSERT INTO genre (id, name_rus) VALUES (7, 'комедия');
+INSERT INTO genre (id, name_rus) VALUES (8, 'фантастика');
+INSERT INTO genre (id, name_rus) VALUES (9, 'боевик');
+INSERT INTO genre (id, name_rus) VALUES (10, 'триллер');
+INSERT INTO genre (id, name_rus) VALUES (11, 'приключения');
+INSERT INTO genre (id, name_rus) VALUES (12, 'аниме');
+INSERT INTO genre (id, name_rus) VALUES (13, 'мультфильм');
+INSERT INTO genre (id, name_rus) VALUES (14, 'семейный');
+INSERT INTO genre (id, name_rus) VALUES (15, 'вестерн');

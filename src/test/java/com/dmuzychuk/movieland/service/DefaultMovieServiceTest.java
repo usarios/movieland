@@ -18,7 +18,7 @@ public class DefaultMovieServiceTest {
 
     @Test
     @DirtiesContext
-    public void getAll() {
+    public void testGetAll() {
         MovieDao movieDao = mock(MovieDao.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();

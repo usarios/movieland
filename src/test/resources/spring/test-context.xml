@@ -11,6 +11,8 @@
     <jdbc:embedded-database id="dataSource"  type="H2" >
         <jdbc:script location="classpath:db/ddl_movie.sql" />
         <jdbc:script location="classpath:db/dml_movie.sql" />
+        <jdbc:script location="classpath:db/ddl_genre.sql" />
+        <jdbc:script location="classpath:db/dml_genre.sql" />
     </jdbc:embedded-database>
 
 </beans>

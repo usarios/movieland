@@ -25,12 +25,12 @@
         </encoder>
     </appender>
 
-    <logger name="com.dmuzychuk.movieland" level="DEBUG"
+    <logger name="com.dmuzychuk.movieland" level="INFO"
             additivity="false">
         <appender-ref ref="FILE-APPENDER" />
     </logger>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE-APPENDER" />
     </root>
 
