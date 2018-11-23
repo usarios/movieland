@@ -1,0 +1,5 @@
+CREATE TABLE genre
+(
+	id INTEGER IDENTITY PRIMARY KEY,
+	name_rus VARCHAR(20)
+);

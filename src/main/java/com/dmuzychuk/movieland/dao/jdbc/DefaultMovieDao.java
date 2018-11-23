@@ -36,7 +36,7 @@ public class DefaultMovieDao implements MovieDao {
     public List<Movie> getAll() {
         List<Movie> movies = new ArrayList<>(jdbcTemplate.query(SQL_GET_ALL_MOVIES, MOVIE_ROW_MAPPER));
 
-        logger.debug("getAll method returned: {} rows", movies.size());
+        logger.info("getAll method returned: {} rows", movies.size());
 
         return movies;
     }
@@ -45,7 +45,11 @@ public class DefaultMovieDao implements MovieDao {
     public List<Movie> getRandom() {
         List<Movie> movies = new ArrayList<>(jdbcTemplate.query(SQL_GET_N_RANDOM_MOVIES, MOVIE_ROW_MAPPER));
 
-        logger.debug("getRandom method returned: {} rows", movies.size());
+        List<Integer> ids = new ArrayList<>();
+        movies.forEach(a->ids.add(a.getId()));
+
+        logger.info("getRandom method returned: {} rows", movies.size());
+        logger.info("getRandom method returned such ids: {}", ids);
 
         return movies;
     }
