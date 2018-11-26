@@ -30,7 +30,6 @@ public class DefaultGenreDaoTest {
 
     @Test
     public void getAll() {
-
         Genre genre1 = new Genre(5, "мелодрама");
         Genre genre2 = new Genre(6, "биография");
         Genre genre3 = new Genre(7, "комедия");

@@ -27,4 +27,8 @@ public class DefaultMovieService implements MovieService {
         return movieDao.getRandom();
     }
 
+    @Override
+    public List<Movie> getByGenreId(int id) {
+        return movieDao.getByGenreId(id);
+    }
 }

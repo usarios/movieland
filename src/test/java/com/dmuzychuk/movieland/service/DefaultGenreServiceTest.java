@@ -19,7 +19,6 @@ public class DefaultGenreServiceTest {
     @Test
     @DirtiesContext
     public void testGetAll() {
-
         GenreDao genreDao = mock(GenreDao.class);
 
         Genre genre1 = new Genre(5, "мелодрама");
