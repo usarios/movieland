@@ -2,6 +2,9 @@ package com.dmuzychuk.movieland.service;
 
 import com.dmuzychuk.movieland.dao.MovieDao;
 import com.dmuzychuk.movieland.entity.Movie;
+import com.dmuzychuk.movieland.entity.SortingColumn;
+import com.dmuzychuk.movieland.entity.SortingItem;
+import com.dmuzychuk.movieland.entity.SortingOrder;
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -134,5 +137,48 @@ public class DefaultMovieServiceTest {
         assertEquals(2, actualMovieList.size());
         assertThat(actualMovieList, hasItems(movie1, movie2));
         assertThat(actualMovieList, not(hasItems(movie3)));
+    }
+
+    @Test
+    public void testGetAllSorted() {
+        MovieDao movieDao = mock(MovieDao.class);
+
+        List<Movie> expectedMovieList = new ArrayList<>();
+
+        Movie movie1 = new Movie();
+        movie1.setId(12);
+        movie1.setNameRussian("Укрощение строптивого");
+        movie1.setNameNative("Il bisbetico domato");
+        movie1.setYearOfRelease(1980);
+        movie1.setRating(7.7);
+        movie1.setPrice(120.00);
+        movie1.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BMTc5NTM5OTY0Nl5BMl5BanBnXkFtZTcwNjg1MjcyMQ@@._V1._SY209_CR3,0,140,209_.jpg");
+        expectedMovieList.add(movie1);
+
+        Movie movie2 = new Movie();
+        movie2.setId(7);
+        movie2.setNameRussian("Блеф");
+        movie2.setNameNative("Bluff storia di truffe e di imbroglioni");
+        movie2.setYearOfRelease(1976);
+        movie2.setRating(7.6);
+        movie2.setPrice(100.00);
+        movie2.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BMjk5YmMxMjMtMTlkNi00YTI5LThhYTMtOTk2NmNiNzQwMzI0XkEyXkFqcGdeQXVyMTQ3Njg3MQ@@._V1._SX140_CR0,0,140,209_.jpg");
+        expectedMovieList.add(movie2);
+
+        DefaultMovieService movieService = new DefaultMovieService(movieDao);
+
+        List<SortingItem> sortingItems = new ArrayList<>();
+
+        sortingItems.add(new SortingItem(SortingColumn.RATING, SortingOrder.DESC));
+        sortingItems.add(new SortingItem(SortingColumn.PRICE, SortingOrder.ASC));
+
+        when(movieService.getAll(sortingItems)).thenReturn(expectedMovieList);
+
+        List<Movie> actualMovieList = movieService.getAll(sortingItems);
+
+        assertEquals(2, actualMovieList.size());
+        assertThat(actualMovieList, hasItems(movie1, movie2));
+        assertEquals("Il bisbetico domato", actualMovieList.get(0).getNameNative());
+        assertEquals("Bluff storia di truffe e di imbroglioni", actualMovieList.get(1).getNameNative());
     }
 }

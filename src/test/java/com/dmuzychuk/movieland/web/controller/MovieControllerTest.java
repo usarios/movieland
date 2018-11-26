@@ -2,6 +2,9 @@ package com.dmuzychuk.movieland.web.controller;
 
 import com.dmuzychuk.movieland.dao.MovieDao;
 import com.dmuzychuk.movieland.entity.Movie;
+import com.dmuzychuk.movieland.entity.SortingColumn;
+import com.dmuzychuk.movieland.entity.SortingItem;
+import com.dmuzychuk.movieland.entity.SortingOrder;
 import com.dmuzychuk.movieland.service.MovieService;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +24,9 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -134,5 +139,67 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[0].rating", equalTo(7.6)))
                 .andExpect(jsonPath("$[0].price", equalTo(100.00)))
                 .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BMjk5YmMxMjMtMTlkNi00YTI5LThhYTMtOTk2NmNiNzQwMzI0XkEyXkFqcGdeQXVyMTQ3Njg3MQ@@._V1._SX140_CR0,0,140,209_.jpg")));
+    }
+
+    @Test
+    @DirtiesContext
+    public void testGetAllMoviesSorted() throws Exception {
+        Movie movie = new Movie();
+        movie.setId(20);
+        movie.setNameRussian("Побег из Шоушенка");
+        movie.setNameNative("The Shawshank Redemption");
+        movie.setYearOfRelease(1994);
+        movie.setRating(8.9);
+        movie.setPrice(123.45);
+        movie.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg");
+
+        List<SortingItem> sortingItems = new ArrayList<>();
+        sortingItems.add(new SortingItem(SortingColumn.RATING, SortingOrder.DESC));
+        sortingItems.add(new SortingItem(SortingColumn.PRICE, SortingOrder.ASC));
+
+        when(movieService.getAll(sortingItems)).thenReturn(Collections.singletonList(movie));
+
+        mockMvc.perform(get("/movie?rating=desc&price=asc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", equalTo(20)))
+                .andExpect(jsonPath("$[0].nameRussian", equalTo("Побег из Шоушенка")))
+                .andExpect(jsonPath("$[0].nameNative", equalTo("The Shawshank Redemption")))
+                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(1994)))
+                .andExpect(jsonPath("$[0].rating", equalTo(8.9)))
+                .andExpect(jsonPath("$[0].price", equalTo(123.45)))
+                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")));
+    }
+
+    @Test
+    @DirtiesContext
+    public void testGetMoviesByGenreSorted() throws Exception {
+        Movie movie = new Movie();
+        movie.setId(25);
+        movie.setNameRussian("Большой куш");
+        movie.setNameNative("Snatch");
+        movie.setYearOfRelease(2000);
+        movie.setRating(8.5);
+        movie.setPrice(160.00);
+        movie.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BMTA2NDYxOGYtYjU1Mi00Y2QzLTgxMTQtMWI1MGI0ZGQ5MmU4XkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1._SY209_CR1,0,140,209_.jpg");
+
+        List<SortingItem> sortingItems = new ArrayList<>();
+        sortingItems.add(new SortingItem(SortingColumn.RATING, SortingOrder.DESC));
+        sortingItems.add(new SortingItem(SortingColumn.PRICE, SortingOrder.ASC));
+
+        when(movieService.getByGenreId(7, sortingItems)).thenReturn(Collections.singletonList(movie));
+
+        mockMvc.perform(get("/movie/genre/7?rating=desc&price=asc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", equalTo(25)))
+                .andExpect(jsonPath("$[0].nameRussian", equalTo("Большой куш")))
+                .andExpect(jsonPath("$[0].nameNative", equalTo("Snatch")))
+                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(2000)))
+                .andExpect(jsonPath("$[0].rating", equalTo(8.5)))
+                .andExpect(jsonPath("$[0].price", equalTo(160.00)))
+                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BMTA2NDYxOGYtYjU1Mi00Y2QzLTgxMTQtMWI1MGI0ZGQ5MmU4XkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1._SY209_CR1,0,140,209_.jpg")));
     }
 }
