@@ -2,9 +2,10 @@ package com.dmuzychuk.movieland.service;
 
 import com.dmuzychuk.movieland.dao.MovieDao;
 import com.dmuzychuk.movieland.entity.Movie;
-import com.dmuzychuk.movieland.entity.SortingColumn;
-import com.dmuzychuk.movieland.entity.SortingItem;
-import com.dmuzychuk.movieland.entity.SortingOrder;
+import com.dmuzychuk.movieland.entity.common.MovieRequestParam;
+import com.dmuzychuk.movieland.entity.common.SortingColumn;
+import com.dmuzychuk.movieland.entity.common.SortingItem;
+import com.dmuzychuk.movieland.entity.common.SortingOrder;
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -167,14 +168,13 @@ public class DefaultMovieServiceTest {
 
         DefaultMovieService movieService = new DefaultMovieService(movieDao);
 
-        List<SortingItem> sortingItems = new ArrayList<>();
+        SortingItem sortingItem = new SortingItem(SortingColumn.RATING, SortingOrder.DESC);
+        MovieRequestParam movieRequestParam = new MovieRequestParam();
+        movieRequestParam.setSortingItem(sortingItem);
 
-        sortingItems.add(new SortingItem(SortingColumn.RATING, SortingOrder.DESC));
-        sortingItems.add(new SortingItem(SortingColumn.PRICE, SortingOrder.ASC));
+        when(movieService.getAll(movieRequestParam)).thenReturn(expectedMovieList);
 
-        when(movieService.getAll(sortingItems)).thenReturn(expectedMovieList);
-
-        List<Movie> actualMovieList = movieService.getAll(sortingItems);
+        List<Movie> actualMovieList = movieService.getAll(movieRequestParam);
 
         assertEquals(2, actualMovieList.size());
         assertThat(actualMovieList, hasItems(movie1, movie2));

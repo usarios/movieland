@@ -3,7 +3,8 @@ package com.dmuzychuk.movieland.dao.jdbc;
 import com.dmuzychuk.movieland.dao.MovieDao;
 import com.dmuzychuk.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.dmuzychuk.movieland.entity.Movie;
-import com.dmuzychuk.movieland.entity.SortingItem;
+import com.dmuzychuk.movieland.entity.common.MovieRequestParam;
+import com.dmuzychuk.movieland.dao.common.DaoSqlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 @Repository
 public class DefaultMovieDao implements MovieDao {
@@ -42,7 +42,7 @@ public class DefaultMovieDao implements MovieDao {
 
     @Override
     public List<Movie> getAll() {
-        List<Movie> movies = new ArrayList<>(jdbcTemplate.query(SQL_GET_ALL_MOVIES, MOVIE_ROW_MAPPER));
+        List<Movie> movies = jdbcTemplate.query(SQL_GET_ALL_MOVIES, MOVIE_ROW_MAPPER);
 
         logger.info("getAll method returned: {} rows", movies.size());
 
@@ -51,7 +51,7 @@ public class DefaultMovieDao implements MovieDao {
 
     @Override
     public List<Movie> getRandom() {
-        List<Movie> movies = new ArrayList<>(jdbcTemplate.query(SQL_GET_N_RANDOM_MOVIES, MOVIE_ROW_MAPPER));
+        List<Movie> movies = jdbcTemplate.query(SQL_GET_N_RANDOM_MOVIES, MOVIE_ROW_MAPPER);
 
         List<Integer> ids = new ArrayList<>();
         for (Movie movie : movies) {
@@ -66,7 +66,7 @@ public class DefaultMovieDao implements MovieDao {
 
     @Override
     public List<Movie> getByGenreId(int id) {
-        List<Movie> movies = new ArrayList<>(jdbcTemplate.query(SQL_GET_MOVIES_BY_GENRE, new Object[]{id}, MOVIE_ROW_MAPPER));
+        List<Movie> movies = jdbcTemplate.query(SQL_GET_MOVIES_BY_GENRE, MOVIE_ROW_MAPPER, id);
 
         logger.info("getByGenreId method with genreId = " + id + " returned {} rows", movies.size());
 
@@ -74,33 +74,24 @@ public class DefaultMovieDao implements MovieDao {
     }
 
     @Override
-    public List<Movie> getAll(List<SortingItem> sortingItems) {
+    public List<Movie> getAll(MovieRequestParam movieRequestParam) {
+        logger.info("SortingPart: {}", movieRequestParam);
 
-        logger.info("SortingPart: {}", sortingItems);
+        String actualSqlText = DaoSqlUtils.getSqlWithSortingClause(SQL_GET_ALL_MOVIES, movieRequestParam);
 
-        return jdbcTemplate.query(SQL_GET_ALL_MOVIES + getSortingItemsFromParamsList(sortingItems),
-                MOVIE_ROW_MAPPER);
+        List<Movie> movies = jdbcTemplate.query(actualSqlText, MOVIE_ROW_MAPPER);
+
+        return movies;
     }
 
     @Override
-    public List<Movie> getByGenreId(int id, List<SortingItem> sortingItems) {
-        List<Movie> movies = new ArrayList<>(jdbcTemplate.query(SQL_GET_MOVIES_BY_GENRE + getSortingItemsFromParamsList(sortingItems),
-                new Object[]{id}, MOVIE_ROW_MAPPER));
+    public List<Movie> getByGenreId(int id, MovieRequestParam movieRequestParam) {
+        String actualSqlText = DaoSqlUtils.getSqlWithSortingClause(SQL_GET_MOVIES_BY_GENRE, movieRequestParam);
+        List<Movie> movies = jdbcTemplate.query(actualSqlText, MOVIE_ROW_MAPPER, id);
 
         logger.info("getByGenreId method with genreId = " + id + " returned {} rows", movies.size());
 
         return movies;
     }
 
-    private static String getSortingItemsFromParamsList(List<SortingItem> sortingItems) {
-
-        String orderByClause = " order by ";
-
-        StringJoiner orderByList = new StringJoiner(",");
-        for (SortingItem item : sortingItems) {
-            orderByList.add(item.toString());
-        }
-
-        return orderByClause + orderByList.toString();
-    }
 }

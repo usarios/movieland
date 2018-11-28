@@ -1,9 +1,10 @@
 package com.dmuzychuk.movieland.dao;
 
 import com.dmuzychuk.movieland.entity.Movie;
-import com.dmuzychuk.movieland.entity.SortingColumn;
-import com.dmuzychuk.movieland.entity.SortingItem;
-import com.dmuzychuk.movieland.entity.SortingOrder;
+import com.dmuzychuk.movieland.entity.common.MovieRequestParam;
+import com.dmuzychuk.movieland.entity.common.SortingColumn;
+import com.dmuzychuk.movieland.entity.common.SortingItem;
+import com.dmuzychuk.movieland.entity.common.SortingOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,26 +74,25 @@ public class DefaultMovieDaoTest {
 
     @Test
     public void testGetAllSorted() {
-        List<SortingItem> sortingItems = new ArrayList<>();
 
-        sortingItems.add(new SortingItem(SortingColumn.RATING, SortingOrder.DESC));
-        sortingItems.add(new SortingItem(SortingColumn.PRICE, SortingOrder.ASC));
+        MovieRequestParam movieRequestParam = new MovieRequestParam();
+        SortingItem sortingItem = new SortingItem(SortingColumn.RATING, SortingOrder.DESC);
+        movieRequestParam.setSortingItem(sortingItem);
 
-        List<Movie> actualMovieList = movieDao.getAll(sortingItems);
+        List<Movie> actualMovieList = movieDao.getAll(movieRequestParam);
 
         assertEquals(25, actualMovieList.size());
-        assertEquals(20, actualMovieList.get(0).getId());
+        assertEquals(17, actualMovieList.get(0).getId());
         assertEquals(7, actualMovieList.get(24).getId());
     }
 
     @Test
     public void testGetByGenreSorted() {
-        List<SortingItem> sortingItems = new ArrayList<>();
+        MovieRequestParam movieRequestParam = new MovieRequestParam();
+        SortingItem sortingItem = new SortingItem(SortingColumn.RATING, SortingOrder.DESC);
+        movieRequestParam.setSortingItem(sortingItem);
 
-        sortingItems.add(new SortingItem(SortingColumn.RATING, SortingOrder.DESC));
-        sortingItems.add(new SortingItem(SortingColumn.PRICE, SortingOrder.ASC));
-
-        List<Movie> actualMovieList = movieDao.getByGenreId(7, sortingItems);
+        List<Movie> actualMovieList = movieDao.getByGenreId(7, movieRequestParam);
 
         assertEquals(7, actualMovieList.size());
         assertEquals("Snatch", actualMovieList.get(0).getNameNative());

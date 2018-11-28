@@ -1,20 +1,16 @@
 package com.dmuzychuk.movieland.web.controller;
 
 import com.dmuzychuk.movieland.entity.Movie;
-import com.dmuzychuk.movieland.entity.SortingColumn;
-import com.dmuzychuk.movieland.entity.SortingItem;
-import com.dmuzychuk.movieland.entity.SortingOrder;
+import com.dmuzychuk.movieland.entity.common.*;
 import com.dmuzychuk.movieland.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,23 +26,20 @@ public class MovieController {
     }
 
     @GetMapping(path = "/movie", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Movie> getAllMoviesSorted(@RequestParam(name = "rating", required = false) String ratingOrder,
-                                          @RequestParam(name = "price", required = false) String priceOrder) {
-        if (ratingOrder == null && priceOrder == null) {
+    public List<Movie> getAllMoviesSorted(@RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
+                                          @RequestParam(name = "price", required = false) SortingOrder priceOrder) {
+        logger.info("Request ratingOrder: {}", ratingOrder);
+        logger.info("Request priceOrder: {}", priceOrder);
+
+        if (ratingOrder != null || priceOrder != null) {
+            MovieRequestParam movieRequestParam = new MovieRequestParam();
+            movieRequestParam.setSortingItem(getValidatedSortingItem(ratingOrder, priceOrder));
+
+            return movieService.getAll(movieRequestParam);
+
+        } else {
             return movieService.getAll();
         }
-
-        List<SortingItem> sortingItems = new ArrayList<>();
-
-        if (ratingOrder != null) sortingItems.add(new SortingItem(SortingColumn.RATING,
-                SortingOrder.valueOf(ratingOrder.toUpperCase())));
-
-        if (priceOrder != null) sortingItems.add(new SortingItem(SortingColumn.PRICE,
-                SortingOrder.valueOf(priceOrder.toUpperCase())));
-
-        logger.info("Sorting items list: {}", sortingItems);
-
-        return movieService.getAll(sortingItems);
     }
 
     @GetMapping(path = "/movie/random", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -56,23 +49,57 @@ public class MovieController {
 
     @GetMapping(path = "/movie/genre/{genreId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getMoviesByGenreSorted(@PathVariable int genreId,
-                                              @RequestParam(name = "rating", required = false) String ratingOrder,
-                                              @RequestParam(name = "price", required = false) String priceOrder
-                                              ) {
-        if (ratingOrder == null && priceOrder == null) {
+                                              @RequestParam(name = "rating", required = false) SortingOrder ratingOrder,
+                                              @RequestParam(name = "price", required = false) SortingOrder priceOrder
+    ) {
+
+        logger.info("Request ratingOrder: {}", ratingOrder);
+        logger.info("Request priceOrder: {}", priceOrder);
+
+        if (ratingOrder != null || priceOrder != null) {
+            MovieRequestParam movieRequestParam = new MovieRequestParam();
+
+            movieRequestParam.setSortingItem(getValidatedSortingItem(ratingOrder, priceOrder));
+
+            return movieService.getByGenreId(genreId, movieRequestParam);
+
+        } else {
             return movieService.getByGenreId(genreId);
         }
+    }
 
-        List<SortingItem> sortingItems = new ArrayList<>();
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        dataBinder.registerCustomEditor(SortingOrder.class, new SortingOrderConverter());
+        dataBinder.registerCustomEditor(SortingColumn.class, new SortingColumnConverter());
+    }
 
-        if (ratingOrder != null) sortingItems.add(new SortingItem(SortingColumn.RATING,
-                SortingOrder.valueOf(ratingOrder.toUpperCase())));
+    SortingItem getValidatedSortingItem(SortingOrder ratingOrder, SortingOrder priceOrder) {
 
-        if (priceOrder != null) sortingItems.add(new SortingItem(SortingColumn.PRICE,
-                SortingOrder.valueOf(priceOrder.toUpperCase())));
+        SortingItem sortingItem = new SortingItem();
 
-        logger.info("Sorting items list: {}", sortingItems);
+        if (ratingOrder != null) {
+            sortingItem.setSortingColumn(SortingColumn.getByName("RATING"));
+            sortingItem.setSortingOrder(ratingOrder);
+        } else {
+            sortingItem.setSortingColumn(SortingColumn.getByName("PRICE"));
+            sortingItem.setSortingOrder(priceOrder);
+        }
 
-        return movieService.getByGenreId(genreId, sortingItems);
+        if (ratingOrder != null && priceOrder != null) {
+            throw new IllegalArgumentException("Only one column should be specified for sorting");
+        }
+
+        if (ratingOrder != null && !ratingOrder.equals(SortingOrder.getByName("DESC"))) {
+            throw new IllegalArgumentException("Sorting order for Rating column may be only Descending");
+        }
+
+        return sortingItem;
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    void handleBadRequests(Exception e) {
+        logger.error("Exception:{}", e);
     }
 }
