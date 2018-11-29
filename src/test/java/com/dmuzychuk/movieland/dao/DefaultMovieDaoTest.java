@@ -1,6 +1,10 @@
 package com.dmuzychuk.movieland.dao;
 
 import com.dmuzychuk.movieland.entity.Movie;
+import com.dmuzychuk.movieland.entity.common.MovieRequestParam;
+import com.dmuzychuk.movieland.entity.common.SortingColumn;
+import com.dmuzychuk.movieland.entity.common.SortingItem;
+import com.dmuzychuk.movieland.entity.common.SortingOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +70,33 @@ public class DefaultMovieDaoTest {
     public void testGetByGenre() {
         List<Movie> actualMovieList = movieDao.getByGenreId(7);
         assertEquals(7, actualMovieList.size());
+    }
+
+    @Test
+    public void testGetAllSorted() {
+
+        MovieRequestParam movieRequestParam = new MovieRequestParam();
+        SortingItem sortingItem = new SortingItem(SortingColumn.RATING, SortingOrder.DESC);
+        movieRequestParam.setSortingItem(sortingItem);
+
+        List<Movie> actualMovieList = movieDao.getAll(movieRequestParam);
+
+        assertEquals(25, actualMovieList.size());
+        assertEquals(17, actualMovieList.get(0).getId());
+        assertEquals(7, actualMovieList.get(24).getId());
+    }
+
+    @Test
+    public void testGetByGenreSorted() {
+        MovieRequestParam movieRequestParam = new MovieRequestParam();
+        SortingItem sortingItem = new SortingItem(SortingColumn.RATING, SortingOrder.DESC);
+        movieRequestParam.setSortingItem(sortingItem);
+
+        List<Movie> actualMovieList = movieDao.getByGenreId(7, movieRequestParam);
+
+        assertEquals(7, actualMovieList.size());
+        assertEquals("Snatch", actualMovieList.get(0).getNameNative());
+        assertEquals("Bluff storia di truffe e di imbroglioni", actualMovieList.get(6).getNameNative());
     }
 }
 

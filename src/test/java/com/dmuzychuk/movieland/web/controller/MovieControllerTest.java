@@ -135,4 +135,34 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[0].price", equalTo(100.00)))
                 .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BMjk5YmMxMjMtMTlkNi00YTI5LThhYTMtOTk2NmNiNzQwMzI0XkEyXkFqcGdeQXVyMTQ3Njg3MQ@@._V1._SX140_CR0,0,140,209_.jpg")));
     }
+
+    @Test
+    public void testGetMoviesSorted() throws Exception {
+        mockMvc.perform(get("/movie?price=desc"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/movie?rating=DESC"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/movie?rating=ASC"))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get("/movie?rating=desc&price=asc"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetMoviesByGenreSorted() throws Exception {
+        mockMvc.perform(get("/movie/genre/7?price=desc"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/movie/genre/7?rating=DESC"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/movie/genre/7?rating=ASC"))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get("/movie/genre/7?rating=desc&price=asc"))
+                .andExpect(status().isBadRequest());
+    }
 }
