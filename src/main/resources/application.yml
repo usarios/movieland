@@ -1,0 +1,14 @@
+jdbc:
+  driver : org.postgresql.Driver
+  url : jdbc:postgresql://localhost:5432/postgres
+  username : postgres
+  password : 12345
+  max-sessions : 10
+  max-wait-millis : 3000
+
+genre-cache-refresh-schedule:
+  initial-delay-millis : 14400000
+  refresh-interval-millis : 14400000
+
+
+
