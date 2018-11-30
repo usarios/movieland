@@ -11,8 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +35,10 @@ public class CachedGenreDao implements GenreDao {
     }
 
     @PostConstruct
-    @Scheduled(initialDelayString = "${initial-delay-millis}", fixedDelayString = "${14400000}")
+    @Scheduled(initialDelayString = "${initial-delay-millis}", fixedDelayString = "${refresh-interval-millis}")
     public void initGenreCache() {
         cachedGenreList = genreDao.getAll();
 
-        logger.info("Genre cache refreshed at: {}", LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME));
-        logger.info("Number of records in Genre cache: {}", cachedGenreList.size());
+        logger.info("Genre cache refreshed. Number of records in Genre cache: {}", cachedGenreList.size());
     }
 }

@@ -27,6 +27,11 @@ public class CachedGenreDaoTest {
         List<Genre> actualGenreList = cachedGenreDao.getAll();
 
         assertEquals(15, actualGenreList.size());
+
+        assertEquals(7, actualGenreList.get(6).getId());
+        actualGenreList.set(6, new Genre(88,"ABC"));
+
+        actualGenreList = cachedGenreDao.getAll();
         assertTrue(actualGenreList.contains(new Genre(7, "комедия")));
     }
 }
