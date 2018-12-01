@@ -2,7 +2,6 @@ package com.dmuzychuk.movieland.entity.common;
 
 public enum SortingColumn {
 
-
     RATING("rating"), PRICE("price");
 
     private String sortingColumn;
